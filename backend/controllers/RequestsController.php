@@ -176,16 +176,15 @@ class RequestsController extends Controller
     {
         $request = new Request();
         $data = Yii::$app->request->post();
-        if ($request->load($data, '') && $request->validate()) {
-            $request->save();
+        if (!$request->load($data, '') || !$request->save()) {
             return [
-                'success' => true,
-                'id' => $request->id,
+                'success' => false,
+                'errors' => $request->getErrors(),
             ];
         }
         return [
-            'success' => false,
-            'errors' => $request->getErrors(),
+            'success' => true,
+            'id' => $request->id,
         ];
     }
 
@@ -288,7 +287,7 @@ class RequestsController extends Controller
         try {
             return ['success' => (bool)$request->delete()];
         } catch (StaleObjectException $e) {
-            return ['success' => false];
+            return ['success' => false, 'error' => 'Заявка была изменена, обновите страницу'];
         } catch (Throwable $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
