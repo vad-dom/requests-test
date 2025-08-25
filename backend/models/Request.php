@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 use yii\db\Expression;
 
 class Request extends ActiveRecord
@@ -21,8 +22,10 @@ class Request extends ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
                 'value' => new Expression('NOW()'),
             ],
         ];

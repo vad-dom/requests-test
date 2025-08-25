@@ -29,7 +29,6 @@ class m250821_205836_requests_table extends Migration
             'updated_at' => $this
                 ->timestamp()
                 ->null()
-                ->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
                 ->comment('Время ответа на заявку'),
         ]);
 
