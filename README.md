@@ -1,6 +1,6 @@
 <h1>Requests API</h1>
-REST API для управления заявками
-Проект выполнен на <b>Yii2</b> (basic template) с использованием <b>Swagger</b> для документации
+<p>REST API для управления заявками</p>
+<p>Проект выполнен на <b>Yii2</b> (basic template) с использованием <b>Swagger</b> для документации</p>
 
 <h2>Дополнения и упрощения:</h2>
   <li>Добавлены методы Delete и View</li>
@@ -36,7 +36,7 @@ REST API для управления заявками
   <li>
     Настроить подключение к базе данных:
     <ul>
-      <li><b>backend/config/db.php</b></li>
+      <li><b>/backend/config/db.php</b></li>
     </ul>
   </li>
   <li>
