@@ -48,19 +48,19 @@
   <li>
     Применить миграцию для создания структуры базы данных:
     <ul>
-      <b>php yii migrate</b>
+      <li><b>php yii migrate</b></li>
     </ul>
   </li>
     <li>
     Swagger-документация (интерактивная, с возможностью отправлять запросы прямо из интерфейса):
     <ul>
-      <b>/swagger</b>
+      <li><b>/swagger</b></li>
     </ul>
   </li>
     <li>
     Запуск API-тестов:
     <ul>
-      <b>vendor/bin/codecept run api</b>
+      <li><b>vendor/bin/codecept run api</b></li>
     </ul>
   </li>
 </ul>
