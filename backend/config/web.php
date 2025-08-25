@@ -15,6 +15,7 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '2b-OTg8V6cc314prFpt5D-xDJnaA3L_9',
+            'enableCsrfValidation' => true,
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -37,19 +38,33 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['error', 'warning', 'info'],
+                    'categories' => ['debug'],
+                    'logFile' => '@runtime/logs/debug.log',
+                    'logVars' => [],
                 ],
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'requests'],
             ],
         ],
-        */
+    ],
+    'modules' => [
+        'swagger' => [
+            'class' => 'light\swagger\SwaggerModule',
+        ],
+    ],
+    'controllerMap' => [
+        'swagger' => [
+            'class' => 'light\swagger\SwaggerController',
+            'restUrl' => '/swagger.json',
+        ],
     ],
     'params' => $params,
 ];

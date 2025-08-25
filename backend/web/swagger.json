@@ -1,0 +1,201 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Requests API",
+        "description": "API для работы с заявками",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/requests": {
+            "get": {
+                "summary": "Получить список заявок",
+                "description": "Возвращает список всех заявок с возможностью фильтрации, сортировки и пагинации.",
+                "operationId": "7bf3c6b2a11f034b14480c11c85f98bb",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Фильтр по статусу",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список заявок"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Создать новую заявку",
+                "operationId": "700573aeb97121af53c307305f61178b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Иван"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ivan@example.com"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Помогите, не работает сайт"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Заявка создана"
+                    },
+                    "400": {
+                        "description": "Ошибка валидации"
+                    }
+                }
+            }
+        },
+        "/requests/{id}": {
+            "get": {
+                "summary": "Просмотр заявки по ID",
+                "operationId": "0e6c405f54554a750d8307413f3b66f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заявки",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Заявка найдена"
+                    },
+                    "404": {
+                        "description": "Заявка не найдена"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Обновить заявку и отправить email",
+                "description": "Обновляет статус и комментарий к заявке, затем отправляет письмо пользователю",
+                "operationId": "ae1bf303b100218816b684b40e469195",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заявки",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "status",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "description": "Статус заявки",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Ваша проблема решена"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Заявка обновлена и письмо отправлено"
+                    },
+                    "404": {
+                        "description": "Заявка не найдена"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "400": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "summary": "Удалить заявку",
+                "description": "Удаляет заявку из базы данных",
+                "operationId": "b4809136cc671a1a097c704b604f94a3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Заявка удалена"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "404": {
+                        "description": "Заявка не найдена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Используйте токен: 100-token или 101-token",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
