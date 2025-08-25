@@ -10,7 +10,7 @@ class RequestsCest
         $I->haveHttpHeader('Authorization', 'Bearer 100-token');
         $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        $I->sendPUT('/requests/2', [
+        $I->sendPUT('/requests/1', [
             'status' => 2,
             'comment' => 'Ваша проблема решена',
         ]);
@@ -31,7 +31,7 @@ class RequestsCest
         $I->haveHttpHeader('Authorization', 'Bearer WRONG_TOKEN');
         $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        $I->sendPUT('/requests/2', [
+        $I->sendPUT('/requests/1', [
             'status' => 2,
             'comment' => 'Ваша проблема решена',
         ]);
@@ -45,7 +45,7 @@ class RequestsCest
     public function updateRequestWithoutAuth(ApiTester $I)
     {
         $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $I->sendPUT('/requests/2', [
+        $I->sendPUT('/requests/1', [
             'status' => 2,
             'comment' => 'Ваша проблема решена',
         ]);
