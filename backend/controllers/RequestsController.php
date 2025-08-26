@@ -62,16 +62,76 @@ class RequestsController extends Controller
     /**
      * @OA\Get(
      *     path="/requests",
-     *     summary="Получить список заявок",
-     *     description="Возвращает список всех заявок с возможностью фильтрации, сортировки и пагинации.",
+     *     summary="Список заявок",
+     *     description="Возвращает список заявок с возможностью фильтрации, сортировки и пагинации",
+     *     tags={"Requests"},
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
-     *         description="Фильтр по статусу",
      *         required=false,
+     *         description="Фильтр по статусу (1 - Active, 2 - Resolved)",
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Список заявок")
+     *     @OA\Parameter(
+     *         name="created_from",
+     *         in="query",
+     *         required=false,
+     *         description="Фильтр по дате создания (начиная с)",
+     *         @OA\Schema(type="string", format="date", example="2025-08-01")
+     *     ),
+     *     @OA\Parameter(
+     *         name="created_to",
+     *         in="query",
+     *         required=false,
+     *         description="Фильтр по дате создания (до)",
+     *         @OA\Schema(type="string", format="date", example="2025-09-01")
+     *     ),
+     *     @OA\Parameter(
+     *         name="updated_from",
+     *         in="query",
+     *         required=false,
+     *         description="Фильтр по дате ответа (начиная с)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="updated_to",
+     *         in="query",
+     *         required=false,
+     *         description="Фильтр по дате ответа (до)",
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort",
+     *         in="query",
+     *         required=false,
+     *         description="Поле для сортировки (name, email, status, created_at, updated_at)",
+     *         @OA\Schema(type="string", example="created_at")
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="query",
+     *         required=false,
+     *         description="Порядок сортировки (ASC или DESC)",
+     *         @OA\Schema(type="string", example="DESC")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         description="Номер страницы для пагинации",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per-page",
+     *         in="query",
+     *         required=false,
+     *         description="Количество элементов на странице",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Список заявок успешно получен",
+     *     )
      * )
      */
     public function actionIndex(): array
@@ -87,7 +147,7 @@ class RequestsController extends Controller
             ->andFilterWhere(['<=', 'updated_at', $request->get('updated_to') ?: null]);
         if ($sort = $request->get('sort')) {
             $order = $request->get('order', 'asc');
-            $query->orderBy([$sort => $order === 'asc' ? SORT_ASC : SORT_DESC]);
+            $query->orderBy([$sort => strtolower($order) === 'asc' ? SORT_ASC : SORT_DESC]);
         }
 
         $pagination = new Pagination([
@@ -119,15 +179,31 @@ class RequestsController extends Controller
      * @OA\Get(
      *     path="/requests/{id}",
      *     summary="Просмотр заявки по ID",
+     *     description="Возвращает данные по одной заявке. Можно выбрать, какие поля включать в ответ.",
+     *     tags={"Requests"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
      *         description="ID заявки",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=1)
      *     ),
-     *     @OA\Response(response=200, description="Заявка найдена"),
-     *     @OA\Response(response=404, description="Заявка не найдена")
+ *         @OA\Parameter(
+     *         name="fields",
+     *         in="query",
+     *         required=false,
+     *         description="Список полей, которые нужно вернуть (через запятую). Например: id,name,email",
+     *         @OA\Schema(type="string", example="id,name,email,status,message,comment,created_at,updated_at")
+     *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Заявка найдена",
+     *         @OA\JsonContent(ref="#/components/schemas/Request")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Заявка не найдена"
+     *     )
      * )
      * @throws NotFoundHttpException
      */
@@ -149,15 +225,16 @@ class RequestsController extends Controller
      * @OA\Post(
      *     path="/requests",
      *     summary="Создать новую заявку",
+     *     tags={"Requests"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 required={"name", "email", "message"},
-     *                 @OA\Property(property="name", type="string", example="Иван"),
-     *                 @OA\Property(property="email", type="string", example="ivan@example.com"),
-     *                 @OA\Property(property="message", type="string", example="Помогите, не работает сайт")
+     *                 @OA\Property(property="name", type="string", example="Лука Модрич"),
+     *                 @OA\Property(property="email", type="string", example="modrich@example.com"),
+     *                 @OA\Property(property="message", type="string", example="Помогите, все сломалось")
      *             )
      *         )
      *     ),
@@ -177,11 +254,13 @@ class RequestsController extends Controller
         $request = new Request();
         $data = Yii::$app->request->post();
         if (!$request->load($data, '') || !$request->save()) {
+            Yii::$app->response->statusCode = 400;
             return [
                 'success' => false,
                 'errors' => $request->getErrors(),
             ];
         }
+        Yii::$app->response->statusCode = 201;
         return [
             'success' => true,
             'id' => $request->id,
@@ -194,6 +273,7 @@ class RequestsController extends Controller
      *     summary="Обновить заявку и отправить email",
      *     description="Обновляет статус и комментарий к заявке, затем отправляет письмо пользователю",
      *     security={{"bearerAuth": {}}},
+     *     tags={"Requests"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -241,6 +321,7 @@ class RequestsController extends Controller
         $data = Yii::$app->request->post();
 
         if (!$request->load($data, '') || !$request->save()) {
+            Yii::$app->response->statusCode = 400;
             return [
                 'success' => false,
                 'errors' => $request->getErrors(),
@@ -265,16 +346,25 @@ class RequestsController extends Controller
      *     path="/requests/{id}",
      *     summary="Удалить заявку",
      *     security={{"bearerAuth": {}}},
-     *     description="Удаляет заявку из базы данных",
+     *     tags={"Requests"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=1)
      *     ),
-     *     @OA\Response(response=200, description="Заявка удалена"),
-     *     @OA\Response(response=401, description="Не авторизован"),
-     *     @OA\Response(response=404, description="Заявка не найдена")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Заявка удалена"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Не авторизован"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Заявка не найдена"
+     *     )
      * )
      * @throws NotFoundHttpException
      */

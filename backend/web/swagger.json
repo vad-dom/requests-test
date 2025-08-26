@@ -8,27 +8,115 @@
     "paths": {
         "/requests": {
             "get": {
-                "summary": "Получить список заявок",
-                "description": "Возвращает список всех заявок с возможностью фильтрации, сортировки и пагинации.",
+                "tags": [
+                    "Requests"
+                ],
+                "summary": "Список заявок",
+                "description": "Возвращает список заявок с возможностью фильтрации, сортировки и пагинации",
                 "operationId": "7bf3c6b2a11f034b14480c11c85f98bb",
                 "parameters": [
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Фильтр по статусу",
+                        "description": "Фильтр по статусу (1 - Active, 2 - Resolved)",
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "created_from",
+                        "in": "query",
+                        "description": "Фильтр по дате создания (начиная с)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-08-01"
+                        }
+                    },
+                    {
+                        "name": "created_to",
+                        "in": "query",
+                        "description": "Фильтр по дате создания (до)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-09-01"
+                        }
+                    },
+                    {
+                        "name": "updated_from",
+                        "in": "query",
+                        "description": "Фильтр по дате ответа (начиная с)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "updated_to",
+                        "in": "query",
+                        "description": "Фильтр по дате ответа (до)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Поле для сортировки (name, email, status, created_at, updated_at)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "created_at"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Порядок сортировки (ASC или DESC)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "DESC"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы для пагинации",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per-page",
+                        "in": "query",
+                        "description": "Количество элементов на странице",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Список заявок"
+                        "description": "Список заявок успешно получен"
                     }
                 }
             },
             "post": {
+                "tags": [
+                    "Requests"
+                ],
                 "summary": "Создать новую заявку",
                 "operationId": "700573aeb97121af53c307305f61178b",
                 "requestBody": {
@@ -44,15 +132,15 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Иван"
+                                        "example": "Лука Модрич"
                                     },
                                     "email": {
                                         "type": "string",
-                                        "example": "ivan@example.com"
+                                        "example": "modrich@example.com"
                                     },
                                     "message": {
                                         "type": "string",
-                                        "example": "Помогите, не работает сайт"
+                                        "example": "Помогите, все сломалось"
                                     }
                                 },
                                 "type": "object"
@@ -72,7 +160,11 @@
         },
         "/requests/{id}": {
             "get": {
+                "tags": [
+                    "Requests"
+                ],
                 "summary": "Просмотр заявки по ID",
+                "description": "Возвращает данные по одной заявке. Можно выбрать, какие поля включать в ответ.",
                 "operationId": "0e6c405f54554a750d8307413f3b66f9",
                 "parameters": [
                     {
@@ -81,13 +173,31 @@
                         "description": "ID заявки",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "description": "Список полей, которые нужно вернуть (через запятую). Например: id,name,email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "id,name,email,status,message,comment,created_at,updated_at"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Заявка найдена"
+                        "description": "Заявка найдена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Request"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Заявка не найдена"
@@ -95,6 +205,9 @@
                 }
             },
             "put": {
+                "tags": [
+                    "Requests"
+                ],
                 "summary": "Обновить заявку и отправить email",
                 "description": "Обновляет статус и комментарий к заявке, затем отправляет письмо пользователю",
                 "operationId": "ae1bf303b100218816b684b40e469195",
@@ -156,8 +269,10 @@
                 ]
             },
             "delete": {
+                "tags": [
+                    "Requests"
+                ],
                 "summary": "Удалить заявку",
-                "description": "Удаляет заявку из базы данных",
                 "operationId": "b4809136cc671a1a097c704b604f94a3",
                 "parameters": [
                     {
@@ -165,7 +280,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -189,6 +305,57 @@
         }
     },
     "components": {
+        "schemas": {
+            "Request": {
+                "title": "Заявка",
+                "description": "Модель заявки, которая хранит данные пользователя и ответ ответственного лица",
+                "properties": {
+                    "id": {
+                        "description": "Уникальный идентификатор заявки",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Имя пользователя",
+                        "type": "string",
+                        "example": "Лука Модрич"
+                    },
+                    "email": {
+                        "description": "Email пользователя",
+                        "type": "string",
+                        "example": "modrich@example.com"
+                    },
+                    "status": {
+                        "description": "Статус заявки: 1 - Active, 2 - Resolved",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "message": {
+                        "description": "Сообщение пользователя",
+                        "type": "string",
+                        "example": "Прошу связаться со мной по вопросу поддержки"
+                    },
+                    "comment": {
+                        "description": "Ответ ответственного лица",
+                        "type": "string",
+                        "example": "Ответственный специалист связался с пользователем"
+                    },
+                    "created_at": {
+                        "description": "Ввремя создания заявки",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-21 12:45:00"
+                    },
+                    "updated_at": {
+                        "description": "Время ответа на заявку",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-22 09:30:00"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",

@@ -7,6 +7,64 @@ use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yii\db\Expression;
 
+/**
+ * @OA\Schema(
+ *     schema="Request",
+ *     type="object",
+ *     title="Заявка",
+ *     description="Модель заявки, которая хранит данные пользователя и ответ ответственного лица",
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         example=1,
+ *         description="Уникальный идентификатор заявки"
+ *     ),
+ *     @OA\Property(
+ *         property="name",
+ *         type="string",
+ *         example="Лука Модрич",
+ *         description="Имя пользователя"
+ *     ),
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         example="modrich@example.com",
+ *         description="Email пользователя"
+ *     ),
+ *     @OA\Property(
+ *         property="status",
+ *         type="integer",
+ *         example=1,
+ *         description="Статус заявки: 1 - Active, 2 - Resolved"
+ *     ),
+ *     @OA\Property(
+ *         property="message",
+ *         type="string",
+ *         example="Прошу связаться со мной по вопросу поддержки",
+ *         description="Сообщение пользователя"
+ *     ),
+ *     @OA\Property(
+ *         property="comment",
+ *         type="string",
+ *         example="Ответственный специалист связался с пользователем",
+ *         description="Ответ ответственного лица"
+ *     ),
+ *     @OA\Property(
+ *         property="created_at",
+ *         type="string",
+ *         format="date-time",
+ *         example="2025-08-21 12:45:00",
+ *         description="Ввремя создания заявки"
+ *     ),
+ *     @OA\Property(
+ *         property="updated_at",
+ *         type="string",
+ *         format="date-time",
+ *         example="2025-08-22 09:30:00",
+ *         description="Время ответа на заявку"
+ *     )
+ * )
+ */
 class Request extends ActiveRecord
 {
     const STATUS_ACTIVE = 1;
@@ -44,7 +102,7 @@ class Request extends ActiveRecord
                 return $model->status === self::STATUS_RESOLVED;
             }],
             [['comment'], 'string'],
-            [['status'], 'integer'],
+            [['status'], 'integer', 'message' => 'Некорректный статус'],
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_RESOLVED], 'message' => 'Некорректный статус'],
         ];
     }
