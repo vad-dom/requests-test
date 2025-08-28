@@ -19,7 +19,7 @@ RUN a2enmod rewrite
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Копируем entrypoint внутрь образа
-COPY ./docker/entrypoint.sh /docker/entrypoint.sh
+COPY ../docker/entrypoint.sh /docker/entrypoint.sh
 RUN chmod +x /docker/entrypoint.sh
 
 # Рабочая директория
