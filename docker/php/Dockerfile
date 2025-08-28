@@ -1,6 +1,6 @@
 FROM php:7.4-apache
 
-# Установка зависимостей для Yii2 + mysql-client
+# Установка зависимостей для Yii2 + mysql-client + dos2unix
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libxml2-dev \
     default-mysql-client \
+    dos2unix \
     && docker-php-ext-install pdo_mysql mysqli zip mbstring gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -19,8 +20,10 @@ RUN a2enmod rewrite
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Копируем entrypoint внутрь образа
-COPY ../docker/entrypoint.sh /docker/entrypoint.sh
-RUN chmod +x /docker/entrypoint.sh
+COPY ./docker/entrypoint.sh /docker/entrypoint.sh
+
+# Конвертируем line endings + даём права на запуск
+RUN dos2unix /docker/entrypoint.sh && chmod +x /docker/entrypoint.sh
 
 # Рабочая директория
 WORKDIR /var/www/html
