@@ -46,9 +46,10 @@ class RequestsController extends Controller
         $behaviors['corsFilter'] = [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['*'],
+                'Origin' => ['http://localhost:3000', 'https://ourfrontend.com'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-                'Access-Control-Request-Headers' => ['*'],
+                'Access-Control-Request-Headers' => ['Content-Type', 'Authorization'],
+                'Access-Control-Allow-Credentials' => true,
                 'Access-Control-Max-Age' => 3600,
             ],
         ];
@@ -294,7 +295,7 @@ class RequestsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Заявка обновлена и письмо отправлено"
+     *         description="Заявка обновлена"
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -328,17 +329,24 @@ class RequestsController extends Controller
             ];
         }
 
-        Yii::$app->mailer->compose()
-            ->setTo($request->email)
-            ->setFrom('noreply@example.com')
-            ->setSubject('Ответ на вашу заявку')
-            ->setTextBody("Здравствуйте, {$request->name}!\n\n{$request->comment}")
-            ->send();
-
-        return [
-            'success' => true,
-            'message' => 'Заявка успешно обновлена и письмо отправлено',
-        ];
+        try {
+            Yii::$app->mailer->compose()
+                ->setTo($request->email)
+                ->setFrom('noreply@example.com')
+                ->setSubject('Ответ на вашу заявку')
+                ->setTextBody("Здравствуйте, {$request->name}!\n\n{$request->comment}")
+                ->send();
+            return [
+                'success' => true,
+                'message' => 'Заявка успешно обновлена и письмо отправлено',
+            ];
+        } catch (Throwable $e) {
+            return [
+                'success' => true,
+                'message' => 'Заявка успешно обновлена, но письмо не удалось отправить',
+                'mail_error' => $e->getMessage(),
+            ];
+        }
     }
 
     /**

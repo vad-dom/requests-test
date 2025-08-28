@@ -9,6 +9,8 @@ class m250821_205836_requests_table extends Migration
      */
     public function safeUp()
     {
+        $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ENGINE=InnoDB';
+
         $this->createTable('requests', [
             'id' => $this->primaryKey()->comment('Уникальный идентификатор'),
             'name' => $this->string(100)->notNull()->comment('Имя пользователя'),
@@ -30,7 +32,7 @@ class m250821_205836_requests_table extends Migration
                 ->timestamp()
                 ->null()
                 ->comment('Время ответа на заявку'),
-        ]);
+        ], $tableOptions);
 
         $this->createIndex('idx_requests_status', 'requests', 'status');
         $this->createIndex('idx_requests_created_at', 'requests', 'created_at');

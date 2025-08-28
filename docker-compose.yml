@@ -1,0 +1,62 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    container_name: requests_app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/runtime
+      - ./docker/entrypoint.sh:/docker/entrypoint.sh
+    environment:
+      DB_HOST: db
+      DB_NAME: request-test
+      DB_USER: root
+      DB_PASS: root
+      APACHE_DOCUMENT_ROOT: /var/www/html/web
+    depends_on:
+      - db
+    networks:
+      - requests_network
+
+  db:
+    image: mysql:5.7
+    container_name: requests_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: request-test
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_general_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - requests_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: requests_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - requests_network
+
+networks:
+  requests_network:
+    driver: bridge
+
+volumes:
+  db_data:

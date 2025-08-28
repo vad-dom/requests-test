@@ -1,0 +1,16 @@
+# Исключаем зависимости и временные файлы
+backend/vendor
+backend/runtime
+backend/web/assets
+
+# Конфиги IDE
+.idea
+.vscode
+
+# Файлы системы
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore

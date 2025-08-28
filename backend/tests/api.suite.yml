@@ -2,7 +2,7 @@ actor: ApiTester
 modules:
   enabled:
     - REST:
-        url: http://requests-test.local/
+        url: http://app
         depends: PhpBrowser
         shortDebugResponse: 300
 
