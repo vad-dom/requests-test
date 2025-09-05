@@ -11,6 +11,8 @@ services:
       - /var/www/html/vendor
       - /var/www/html/runtime
       - ./docker/entrypoint.sh:/docker/entrypoint.sh
+    env_file:
+      - ./backend/.env
     environment:
       DB_HOST: db
       DB_NAME: request-test

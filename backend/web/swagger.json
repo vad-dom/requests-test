@@ -42,8 +42,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "format": "date",
-                            "example": "2025-09-01"
+                            "format": "date"
                         }
                     },
                     {

@@ -43,10 +43,11 @@ class RequestsController extends Controller
     {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_JSON;
+        $allowedOrigins = explode(',', getenv('CORS_ALLOWED_ORIGINS'));
         $behaviors['corsFilter'] = [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://localhost:3000', 'https://ourfrontend.com'],
+                'Origin' => $allowedOrigins,
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
                 'Access-Control-Request-Headers' => ['Content-Type', 'Authorization'],
                 'Access-Control-Allow-Credentials' => true,
@@ -85,7 +86,7 @@ class RequestsController extends Controller
      *         in="query",
      *         required=false,
      *         description="Фильтр по дате создания (до)",
-     *         @OA\Schema(type="string", format="date", example="2025-09-01")
+     *         @OA\Schema(type="string", format="date")
      *     ),
      *     @OA\Parameter(
      *         name="updated_from",
