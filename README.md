@@ -131,3 +131,30 @@
   </li>
   <li>Результат тестов будет отображён в терминале</li>
 </ul>
+
+<ol>
+  <li>
+    <strong>Клонировать репозиторий:</strong>
+    <pre><code>git clone https://github.com/vad-dom/requests-test.git cd requests-test</code></pre>
+  </li> 
+  <li> 
+    <strong>Создать <code>.env</code> из шаблона:</strong> 
+    <pre><code>cp backend/.env.example backend/.env</code></pre> 
+  </li> 
+  <li> 
+    <strong>Собрать и запустить контейнеры:</strong> 
+    <pre><code>docker-compose up --build</code></pre> 
+    <p>При запуске автоматически:</p> 
+    <ul> 
+      <li>Соберутся Docker-образы</li> 
+      <li>Установятся зависимости через Composer</li> 
+      <li>Выполнятся миграции</li> 
+      <li>Настроятся права на нужные папки</li> 
+      <li>Запустится Apache внутри контейнера</li> 
+    </ul> 
+  </li> 
+  <li> 
+    <strong>Swagger-документация будет доступна по адресу:</strong> 
+    <pre><code>http://localhost:8080</code></pre> 
+  </li> 
+</ol>
