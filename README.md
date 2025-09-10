@@ -53,9 +53,9 @@
 <b>Endpointы API:</b>
 Методы API должны быть документированы каким-нибудь средством документации на ваш выбор. Предпочтительно, с наличием песочницы.
 <ul>
-  <li><b>GET /requests/</b> - получение заявок ответственным лицом, с фильтрацией по статусу</li>
-  <li><b>PUT /requests/{id}/</b> - ответ на конкретную задачу ответственным лицом</li>
-  <li><b>POST /requests/</b> - отправка заявки пользователями системы</li>
+  <li>GET <b>/requests/</b> - получение заявок ответственным лицом, с фильтрацией по статусу</li>
+  <li>PUT <b>/requests/{id}/</b> - ответ на конкретную задачу ответственным лицом</li>
+  <li>POST <b>/requests/</b> - отправка заявки пользователями системы</li>
 </ul>
 
 <h2>Реализация:</h2>
@@ -115,10 +115,7 @@
 <ol>
   <li>
     <strong>Клонировать репозиторий requests-test:</strong>
-    <code>
-      git clone https://github.com/vad-dom/requests-test.git 
-      cd requests-test
-    </code>
+    <pre><code>git clone https://github.com/vad-dom/requests-test.git<br>cd requests-test</code></pre>
   </li> 
   <li> 
     <strong>Создать <code>.env</code> из шаблона:</strong> 
@@ -143,7 +140,5 @@
 </ol>
 
 <h2>✅ Как запустить API-тесты (внутри контейнера приложения):</h2>
-  <li> 
-    <pre><code>docker-compose exec app vendor/bin/codecept run api</code></pre> 
-    <p>Результаты будут выведены в терминале</p>
-  </li> 
+  <pre><code>docker-compose exec app vendor/bin/codecept run api</code></pre> 
+  <p>Результаты будут выведены в терминале</p>
