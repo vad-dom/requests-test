@@ -115,7 +115,8 @@
 <ol>
   <li>
     <strong>Клонировать репозиторий requests-test:</strong>
-    <pre><code>git clone https://github.com/vad-dom/requests-test.git<br>cd requests-test</code></pre>
+    <pre><code>git clone https://github.com/vad-dom/requests-test.git</code></pre>
+    <pre><code>cd requests-test</code></pre>
   </li> 
   <li> 
     <strong>Создать <code>.env</code> из шаблона:</strong> 
@@ -133,6 +134,7 @@
       <li>Запустится Apache внутри контейнера</li> 
     </ul> 
   </li> 
+  
   <li> 
     <strong>Swagger-документация будет доступна по адресу:</strong> 
     <pre><code>http://localhost:8080</code></pre> 
