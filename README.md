@@ -86,7 +86,7 @@
 
 <h2>🛠 Используемые технологии:</h2>
   <li>Yii2 (Basic)</li>
-  <li>Docker & docker-compose</li>
+  <li>Docker & docker compose</li>
   <li>PHP 7.4 + Apache</li>
   <li>MySQL 5.7</li>
   <li>Swagger (OpenAPI)</li>
@@ -126,7 +126,7 @@
   </li> 
   <li> 
     <strong>Собрать и запустить контейнеры:</strong> 
-    <pre><code>docker-compose up --build</code></pre> 
+    <pre><code>docker compose up --build</code></pre> 
     <p>При этом автоматически:</p> 
     <ul> 
       <li>Соберутся Docker-образы</li> 
@@ -145,5 +145,5 @@
 
 <h2>✅ Как запустить API-тесты:</h2>
 <p>(внутри контейнера приложения)</p>
-  <pre><code>docker-compose exec app vendor/bin/codecept run api</code></pre> 
+  <pre><code>docker compose exec app vendor/bin/codecept run api</code></pre> 
   <p>Результаты будут выведены в терминале</p>
